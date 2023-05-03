@@ -12,8 +12,7 @@
       return;
     }
 
-    // instanciar nova tarefa e inserir no indice especificado
-    const novaTarefa = new Tarefa(descricao, indice, obterDataAtual(), obterHoraAtual());
+    const novaTarefa = new Tarefa(descricao.value, prioridade.value, obterDataAtual(), obterHoraAtual());
     minhaLista.addAtIndex(indice, novaTarefa)
     txtnovaTarefa.value = "";
     txtnovaPrioridade.value = "";
@@ -26,7 +25,7 @@
     const prioridade = document.getElementById("txtnovaPrioridade").value.trim();
   
      
-    const novaTarefa = new Tarefa(descricao, prioridade, obterDataAtual(), obterHoraAtual());
+    const novaTarefa = new Tarefa(descricao.value, prioridade.value, obterDataAtual(), obterHoraAtual());
     let indice = 0;
     let novaPrioridade = parseInt(novaTarefa.prioridade);
     if(minhaLista.isEmpty())
@@ -36,7 +35,20 @@
     else if(novaPrioridade < minhaLista.first().prioridade  )
        retorno = minhaLista.addFirst(novaTarefa);
     else{
+    /* prioridadeAtual = minhaLista.head.prioridade;
+      posAtual = 0;
+      minhaLista.forEach((item) => {
+        if(novaTarefa.prioridade > item.prioridade)
+          posAtual++;
+        minhaLista.addAtIndex(posAtual, novaTarefa);
+      });
+
+    txtnovaTarefa.value = "";
+    txtnovaPrioridade.value = "";
+    txtIndice.value = "";
+    mostrarLista();
       // implementar a insercao ordenada de acordo com a prioridade
+      */
     }
    
  }
@@ -46,10 +58,15 @@
     if(minhaLista.isEmpty()) 
       alert("Lista vazia!");
     else{  
+      minhaLista.deleteFirst();
+      mostrarLista();
       // remover e mostrar mensagem de remocao
     }
  }
-
+//--------------------------------------------------------------------------------------------
+function removeAtIndex(){
+ 
+}
 //--------------------------------------------------------------------------------------------
 function mostrarMensagemRemocao(tarefaRealizada) {
     const mensagem = document.getElementById("mensagem-remocao");
