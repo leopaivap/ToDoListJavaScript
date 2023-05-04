@@ -86,7 +86,16 @@ deleteFirst() {
     isEmpty() {
         return this.head === null; 
       }
-
+//------------------------------------------------------------
+first(){
+  if(!this.isEmpty())
+    return this.head.data;
+}
+//------------------------------------------------------------
+last(){
+  if(!this.isEmpty())
+    return this.tail.data;
+}
 //------------------------------------------------------------
     forEach(callback) {
         let currentNode = this.head;

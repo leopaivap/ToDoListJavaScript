@@ -12,7 +12,7 @@
       return;
     }
 
-    const novaTarefa = new Tarefa(descricao.value, prioridade.value, obterDataAtual(), obterHoraAtual());
+    const novaTarefa = new Tarefa(descricao, prioridade, obterDataAtual(), obterHoraAtual());
     minhaLista.addAtIndex(indice, novaTarefa)
     txtnovaTarefa.value = "";
     txtnovaPrioridade.value = "";
@@ -25,7 +25,7 @@
     const prioridade = document.getElementById("txtnovaPrioridade").value.trim();
   
      
-    const novaTarefa = new Tarefa(descricao.value, prioridade.value, obterDataAtual(), obterHoraAtual());
+    const novaTarefa = new Tarefa(descricao, prioridade, obterDataAtual(), obterHoraAtual());
     let indice = 0;
     let novaPrioridade = parseInt(novaTarefa.prioridade);
     if(minhaLista.isEmpty())
@@ -35,22 +35,27 @@
     else if(novaPrioridade < minhaLista.first().prioridade  )
        retorno = minhaLista.addFirst(novaTarefa);
     else{
-    /* prioridadeAtual = minhaLista.head.prioridade;
-      posAtual = 0;
       minhaLista.forEach((item) => {
-        if(novaTarefa.prioridade > item.prioridade)
-          posAtual++;
-        minhaLista.addAtIndex(posAtual, novaTarefa);
+        if(novaPrioridade >= item.prioridade)
+          indice++;
       });
+      minhaLista.addAtIndex(indice, novaTarefa);
 
     txtnovaTarefa.value = "";
     txtnovaPrioridade.value = "";
     txtIndice.value = "";
     mostrarLista();
       // implementar a insercao ordenada de acordo com a prioridade
-      */
+      
     }
    
+ }
+//--------------------------------------------------------------------------------------------
+ function mostraPrimeiro(){
+    if(!minhaLista.isEmpty())
+      alert("Primeiro da Fila: \n" + minhaLista.first());
+    else
+      alert("Lista Vazia!");
  }
 //--------------------------------------------------------------------------------------------
  // Função para remover o primeiro elemento da fila
@@ -58,7 +63,8 @@
     if(minhaLista.isEmpty()) 
       alert("Lista vazia!");
     else{  
-      minhaLista.deleteFirst();
+      retorno = minhaLista.deleteFirst();
+      mostrarMensagemRemocao(retorno);
       mostrarLista();
       // remover e mostrar mensagem de remocao
     }
@@ -68,9 +74,36 @@ function removeAtIndex(){
  
 }
 //--------------------------------------------------------------------------------------------
+  function maisTempo(){
+    let maiorTempo = 0, maisDias = 0, maiorHoraAtual = 0, maiorMinutoAtual = 0, maiorSegundoAtual = 0, maisDiasAtual = 0;
+    const novaTarefa = new Tarefa(null, null, null, null);
+    minhaLista.forEach((item) => {
+      let diferencaHoras = (calcularDiferencaHoras(item.hora, obterHoraAtual()));
+      const [hora, minuto, segundo] = diferencaHoras.split(':').map(Number);
+      maiorDiasAtual =  calcularDiferencaDias(item.data, obterDataAtual());
+     if(maisDiasAtual > maisDias){
+       maisDias = maisDiasAtual;
+       novaTarefa = item;
+     } else if(maisDiasAtual < maisDias && hora > maiorHoraAtual ){
+      maiorHoraAtual = hora;
+      novaTarefa = item;
+     } else if(maisDiasAtual < maisDias && hora < maiorHoraAtual && minuto > maiorMinutoAtual){
+      maiorMinutoAtual = minuto;
+      novaTarefa = item;
+     } else if(maisDiasAtual < maisDias && hora < maiorHoraAtual && minuto < maiorMinutoAtual && segundo > maiorSegundoAtual){
+       maiorSegundoAtual = segundo;
+       novaTarefa = item;
+     }
+    });
+    alert("Tarefa mais antiga: " + novaTarefa);
+  }
+//--------------------------------------------------------------------------------------------
 function mostrarMensagemRemocao(tarefaRealizada) {
     const mensagem = document.getElementById("mensagem-remocao");
-    mensagem.innerHTML ="Tarefa "+ tarefaRealizada.descricao + ", realizada em "; // apresentar a mensagem de remoção com dias e horas
+    // apresentar a mensagem de remoção com dias e horas
+    let diferencaHoras = (calcularDiferencaHoras(tarefaRealizada.hora, obterHoraAtual()));
+    const [hora, minuto, segundo] = diferencaHoras.split(':').map(Number);
+    mensagem.innerHTML ="Tarefa "+ tarefaRealizada.descricao + ", realizada em: " + calcularDiferencaDias(tarefaRealizada.data, obterDataAtual()) + " dias, " + hora + " horas, " + minuto + " minutos e " + segundo + " segundos";
     mensagem.style.display = "block";
 
   }
