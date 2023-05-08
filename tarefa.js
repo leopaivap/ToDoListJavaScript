@@ -5,7 +5,6 @@
       this._data = data;
       this._hora = hora;
     }
-  
     get descricao() {
         return this._descricao;
     }

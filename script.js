@@ -7,7 +7,7 @@
     const prioridade = document.getElementById("txtnovaPrioridade").value.trim();
     const indice = document.getElementById("txtIndice").value.trim();
     
-    if (descricao === "" || prioridade === "") {
+    if (descricao === "" || prioridade === "" || indice === "") {
       alert("Preencha todos os campos antes de adicionar à fila!");
       return;
     }
@@ -23,17 +23,33 @@
   function adicionarOrdenado() {
     const descricao = document.getElementById("txtnovaTarefa").value.trim();
     const prioridade = document.getElementById("txtnovaPrioridade").value.trim();
-  
+
+    if (descricao === "" || prioridade === "") {
+      alert("Preencha todos os campos antes de adicionar à fila!");
+      return;
+    }
      
     const novaTarefa = new Tarefa(descricao, prioridade, obterDataAtual(), obterHoraAtual());
     let indice = 0;
     let novaPrioridade = parseInt(novaTarefa.prioridade);
-    if(minhaLista.isEmpty())
-       retorno = minhaLista.addFirst(novaTarefa);
-    else if(novaPrioridade >= minhaLista.last().prioridade )
-       retorno = minhaLista.addLast(novaTarefa);
-    else if(novaPrioridade < minhaLista.first().prioridade  )
-       retorno = minhaLista.addFirst(novaTarefa);
+    if(minhaLista.isEmpty()){
+      retorno = minhaLista.addFirst(novaTarefa);
+      txtnovaTarefa.value = "";
+      txtnovaPrioridade.value = "";
+      txtIndice.value = "";
+    }  
+    else if(novaPrioridade >= minhaLista.last().prioridade ){
+      retorno = minhaLista.addLast(novaTarefa);
+      txtnovaTarefa.value = "";
+      txtnovaPrioridade.value = "";
+      txtIndice.value = "";
+    }
+    else if(novaPrioridade < minhaLista.first().prioridade  ){
+      retorno = minhaLista.addFirst(novaTarefa);
+      txtnovaTarefa.value = "";
+      txtnovaPrioridade.value = "";
+      txtIndice.value = "";
+    } 
     else{
       minhaLista.forEach((item) => {
         if(novaPrioridade >= item.prioridade)
@@ -41,13 +57,12 @@
       });
       minhaLista.addAtIndex(indice, novaTarefa);
 
-    txtnovaTarefa.value = "";
-    txtnovaPrioridade.value = "";
-    txtIndice.value = "";
-    mostrarLista();
+      txtnovaTarefa.value = "";
+      txtnovaPrioridade.value = "";
+      txtIndice.value = "";
       // implementar a insercao ordenada de acordo com a prioridade
-      
     }
+    mostrarLista();
    
  }
 //--------------------------------------------------------------------------------------------
@@ -74,29 +89,27 @@ function removeAtIndex(){
  
 }
 //--------------------------------------------------------------------------------------------
-  function maisTempo(){
-    let maiorTempo = 0, maisDias = 0, maiorHoraAtual = 0, maiorMinutoAtual = 0, maiorSegundoAtual = 0, maisDiasAtual = 0;
-    const novaTarefa = new Tarefa(null, null, null, null);
-    minhaLista.forEach((item) => {
-      let diferencaHoras = (calcularDiferencaHoras(item.hora, obterHoraAtual()));
-      const [hora, minuto, segundo] = diferencaHoras.split(':').map(Number);
-      maiorDiasAtual =  calcularDiferencaDias(item.data, obterDataAtual());
-     if(maisDiasAtual > maisDias){
-       maisDias = maisDiasAtual;
-       novaTarefa = item;
-     } else if(maisDiasAtual < maisDias && hora > maiorHoraAtual ){
-      maiorHoraAtual = hora;
-      novaTarefa = item;
-     } else if(maisDiasAtual < maisDias && hora < maiorHoraAtual && minuto > maiorMinutoAtual){
-      maiorMinutoAtual = minuto;
-      novaTarefa = item;
-     } else if(maisDiasAtual < maisDias && hora < maiorHoraAtual && minuto < maiorMinutoAtual && segundo > maiorSegundoAtual){
-       maiorSegundoAtual = segundo;
-       novaTarefa = item;
-     }
-    });
-    alert("Tarefa mais antiga: " + novaTarefa);
-  }
+function maisTempo() {
+  let maiorHoraAtual = 0, segundoAtual = 0;
+  const novaTarefa = new Tarefa(null, null, null, null);
+
+  minhaLista.forEach(item => {
+    const diferencaHoras = calcularDiferencaHoras(item.hora, obterHoraAtual());
+    const [hora, minuto, segundo] = diferencaHoras.split(':').map(Number);
+    console.log(`${hora}:${minuto}:${segundo}`);
+    segundoAtual = (hora * 3600) + (minuto * 60) + segundo;
+
+    if (segundoAtual > maiorHoraAtual) {
+      maiorHoraAtual = segundoAtual;
+      novaTarefa.descricao = item.descricao;
+      novaTarefa.prioridade = item.prioridade;
+      novaTarefa.hora = item.hora;
+      novaTarefa.data = item.data;
+    }
+  });
+  alert(`Tarefa mais antiga:\n${novaTarefa}\nTempo esperado: ${calcularDiferencaHoras(novaTarefa.hora, obterHoraAtual())}`);
+}
+
 //--------------------------------------------------------------------------------------------
 function mostrarMensagemRemocao(tarefaRealizada) {
     const mensagem = document.getElementById("mensagem-remocao");
@@ -172,3 +185,4 @@ function calcularDiferencaDias(dataInicial, dataFinal) {
   const diferencaDias = Math.floor(diferencaMs / msPorDia);
   return diferencaDias;
 }
+//--------------------------------------------------------------------------------------------
