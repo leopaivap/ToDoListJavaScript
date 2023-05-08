@@ -1,6 +1,6 @@
  // Crie uma instância da fila
  let minhaLista = new LinkedList();
-
+//--------------------------------------------------------------------------------------------
  // Função para adicionar um elemento 
  function adicionarElemento() {
     const descricao = document.getElementById("txtnovaTarefa").value.trim();
@@ -14,12 +14,11 @@
 
     const novaTarefa = new Tarefa(descricao, prioridade, obterDataAtual(), obterHoraAtual());
     minhaLista.addAtIndex(indice, novaTarefa)
-    txtnovaTarefa.value = "";
-    txtnovaPrioridade.value = "";
-    txtIndice.value = "";
+    limpaCampos();
     mostrarLista();
  }
-  // Função para adicionar um elemento ordenado
+//--------------------------------------------------------------------------------------------
+// Função para adicionar um elemento ordenado
   function adicionarOrdenado() {
     const descricao = document.getElementById("txtnovaTarefa").value.trim();
     const prioridade = document.getElementById("txtnovaPrioridade").value.trim();
@@ -32,23 +31,18 @@
     const novaTarefa = new Tarefa(descricao, prioridade, obterDataAtual(), obterHoraAtual());
     let indice = 0;
     let novaPrioridade = parseInt(novaTarefa.prioridade);
+    let retorno = false;
     if(minhaLista.isEmpty()){
       retorno = minhaLista.addFirst(novaTarefa);
-      txtnovaTarefa.value = "";
-      txtnovaPrioridade.value = "";
-      txtIndice.value = "";
+      limpaCampos();
     }  
     else if(novaPrioridade >= minhaLista.last().prioridade ){
       retorno = minhaLista.addLast(novaTarefa);
-      txtnovaTarefa.value = "";
-      txtnovaPrioridade.value = "";
-      txtIndice.value = "";
+      limpaCampos();
     }
     else if(novaPrioridade < minhaLista.first().prioridade  ){
       retorno = minhaLista.addFirst(novaTarefa);
-      txtnovaTarefa.value = "";
-      txtnovaPrioridade.value = "";
-      txtIndice.value = "";
+      limpaCampos();
     } 
     else{
       minhaLista.forEach((item) => {
@@ -57,9 +51,7 @@
       });
       minhaLista.addAtIndex(indice, novaTarefa);
 
-      txtnovaTarefa.value = "";
-      txtnovaPrioridade.value = "";
-      txtIndice.value = "";
+    limpaCampos();
       // implementar a insercao ordenada de acordo com a prioridade
     }
     mostrarLista();
@@ -89,15 +81,28 @@ function removeAtIndex(){
  
 }
 //--------------------------------------------------------------------------------------------
+function limpaCampos(){
+  txtnovaTarefa.value = "";
+  txtnovaPrioridade.value = "";
+  txtIndice.value = "";
+}
+//--------------------------------------------------------------------------------------------
 function maisTempo() {
+  if(minhaLista.isEmpty()){
+    alert("Lista vazia!");
+    return;
+  }
+
   let maiorHoraAtual = 0, segundoAtual = 0;
   const novaTarefa = new Tarefa(null, null, null, null);
 
   minhaLista.forEach(item => {
     const diferencaHoras = calcularDiferencaHoras(item.hora, obterHoraAtual());
     const [hora, minuto, segundo] = diferencaHoras.split(':').map(Number);
-    console.log(`${hora}:${minuto}:${segundo}`);
-    segundoAtual = (hora * 3600) + (minuto * 60) + segundo;
+    console.log(`${hora}:${minuto}:${segundo}`); //debug
+    
+    const diferencaDias = calcularDiferencaDias(item.data, obterDataAtual());
+    segundoAtual = (diferencaDias * 86400 + (hora * 3600) + (minuto * 60) + segundo);
 
     if (segundoAtual > maiorHoraAtual) {
       maiorHoraAtual = segundoAtual;
@@ -107,7 +112,13 @@ function maisTempo() {
       novaTarefa.data = item.data;
     }
   });
-  alert(`Tarefa mais antiga:\n${novaTarefa}\nTempo esperado: ${calcularDiferencaHoras(novaTarefa.hora, obterHoraAtual())}`);
+  let tempo = calcularDiferencaHoras(novaTarefa.hora, obterHoraAtual());
+  const [hora, minuto, segundo] = tempo.split(':').map(Number);
+  //alert(`Tarefa mais antiga:\n${novaTarefa}\n\nTempo esperado:\n ${calcularDiferencaDias(novaTarefa.data, obterDataAtual())} dias, ${hora} horas, ${minuto} minutos e ${segundo} segundos`);
+  
+  const mensagem = document.getElementById("mensagem-remocao");
+  mensagem.innerHTML = `Tarefa mais antiga:<br>${novaTarefa}<br>Tempo esperado: ${calcularDiferencaDias(novaTarefa.data, obterDataAtual())} dias, ${hora} horas, ${minuto} minutos e ${segundo} segundos`;
+  mensagem.style.display = "block";
 }
 
 //--------------------------------------------------------------------------------------------

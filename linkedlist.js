@@ -71,7 +71,6 @@ class Node {
       }
 //------------------------------------------------------------  
 deleteFirst() {
-
       const removedData = this.head.data; // Salva o valor do elemento removido
       this.head = this.head.next;
       if (this.head !== null) {
