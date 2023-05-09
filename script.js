@@ -67,19 +67,26 @@
 //--------------------------------------------------------------------------------------------
  // Função para remover o primeiro elemento da fila
  function removerElemento() {
-    if(minhaLista.isEmpty()) 
+    if(minhaLista.isEmpty()){
       alert("Lista vazia!");
-    else{  
+      return;
+    } 
+    else if(checked == 0)
       retorno = minhaLista.deleteFirst();
-      mostrarMensagemRemocao(retorno);
-      mostrarLista();
-      // remover e mostrar mensagem de remocao
+    else {
+      let resposta = confirm("Deseja excluir item selecionado?");
+      if(resposta){
+        retorno = minhaLista.deleteAtIndex(removido);
+        removido = 0;
+      }
+      else{
+        checked = 0;
+        return;
+      }
     }
+    mostrarMensagemRemocao(retorno);
+    mostrarLista();
  }
-//--------------------------------------------------------------------------------------------
-function removeAtIndex(){
- 
-}
 //--------------------------------------------------------------------------------------------
 function limpaCampos(){
   txtnovaTarefa.value = "";
@@ -148,7 +155,48 @@ function mostrarMensagemRemocao(tarefaRealizada) {
           listaElemento.appendChild(li);
         }); // for each percorre cada elemento da lista encadeada
    }
+   retorno = getIndexLi();
+   if(retorno != null){
+     
+   }
  }
+//--------------------------------------------------------------------------------------------
+let checked = 0, removido = 0;
+ function getIndexLi(){
+  let items = document.querySelectorAll("#list_listadeTarefas li"),
+  tab = [], index;
+  let iAntes = 0;
+
+// add values to the array
+  for(let i = 0; i < items.length; i++){
+    tab.push(items[i].innerHTML);
+  }
+  
+  // get selected element index
+  for(let i = 0; i < items.length; i++)
+  {
+      items[i].onclick = function(){
+      index = tab.indexOf(this.innerHTML);
+      console.log(this.innerHTML + " Index = " + index);
+
+      if(checked == 0){
+        items[i].style.backgroundColor = "#7f8fa6";
+        items[i].style.color = "white";
+        checked = 1;
+        iAntes = i;
+      }
+      else {
+        items[iAntes].style.backgroundColor = "#f2f2f2";
+        items[iAntes].style.color = "black";
+        items[i].style.backgroundColor = "#7f8fa6";
+        items[i].style.color = "white";
+        iAntes = i;
+      }
+    removido = index;
+    };
+  }
+  
+}
 //--------------------------------------------------------------------------------------------
  // funcao data
  function obterDataAtual() {

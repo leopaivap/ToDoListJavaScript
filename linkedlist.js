@@ -82,6 +82,30 @@ deleteFirst() {
       return removedData; // Retorna o valor do elemento removido
   }
 //------------------------------------------------------------
+deleteAtIndex(index){
+  let indexAtual = 0, noAtual = this.head;
+  if(this.isEmpty())
+    return null;
+
+  while(indexAtual < index){
+    noAtual = noAtual.next;
+    indexAtual++;
+  }
+
+  if(noAtual.prev == null)
+    this.head = noAtual.next;
+  else
+    noAtual.prev.next = noAtual.next;
+  
+  if(noAtual.next == null)
+    this.tail = noAtual.prev;
+  else
+    noAtual.next.prev = noAtual.prev;
+  
+  this.length--;
+  return noAtual.data;
+}
+//------------------------------------------------------------
     isEmpty() {
         return this.head === null; 
       }
