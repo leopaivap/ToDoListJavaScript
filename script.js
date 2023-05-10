@@ -2,10 +2,11 @@
  let minhaLista = new LinkedList();
 //--------------------------------------------------------------------------------------------
  // Função para adicionar um elemento 
+ /*
  function adicionarElemento() {
     const descricao = document.getElementById("txtnovaTarefa").value.trim();
     const prioridade = document.getElementById("txtnovaPrioridade").value.trim();
-    const indice = document.getElementById("txtIndice").value.trim();
+    //const indice = document.getElementById("txtIndice").value.trim();
     
     if (descricao === "" || prioridade === "" || indice === "") {
       alert("Preencha todos os campos antes de adicionar à fila!");
@@ -17,6 +18,7 @@
     limpaCampos();
     mostrarLista();
  }
+ */
 //--------------------------------------------------------------------------------------------
 // Função para adicionar um elemento ordenado
   function adicionarOrdenado() {
@@ -51,16 +53,23 @@
       });
       minhaLista.addAtIndex(indice, novaTarefa);
 
-    limpaCampos();
-      // implementar a insercao ordenada de acordo com a prioridade
+      limpaCampos();
     }
+
     mostrarLista();
-   
  }
 //--------------------------------------------------------------------------------------------
  function mostraPrimeiro(){
-    if(!minhaLista.isEmpty())
-      alert("Primeiro da Fila: \n" + minhaLista.first());
+    if(!minhaLista.isEmpty()){
+      //alert("Primeiro da Fila: \n" + minhaLista.first());
+
+      primeiro = minhaLista.first();
+      const [hora, minuto, segundo] = tempoSplit(primeiro);
+      
+      const mensagem = document.getElementById("mensagem-remocao");
+      mensagem.innerHTML = `Primeiro da Lista:<br>${primeiro}<br>Tempo de espera: ${calcularDiferencaDias(primeiro.data, obterDataAtual())} dias, ${hora} horas, ${minuto} minutos e ${segundo} segundos`;
+      mensagem.style.display = "block";
+    }
     else
       alert("Lista Vazia!");
  }
@@ -91,7 +100,7 @@
 function limpaCampos(){
   txtnovaTarefa.value = "";
   txtnovaPrioridade.value = "";
-  txtIndice.value = "";
+  //txtIndice.value = "";
 }
 //--------------------------------------------------------------------------------------------
 function maisTempo() {
@@ -119,24 +128,28 @@ function maisTempo() {
       novaTarefa.data = item.data;
     }
   });
-  let tempo = calcularDiferencaHoras(novaTarefa.hora, obterHoraAtual());
-  const [hora, minuto, segundo] = tempo.split(':').map(Number);
-  //alert(`Tarefa mais antiga:\n${novaTarefa}\n\nTempo esperado:\n ${calcularDiferencaDias(novaTarefa.data, obterDataAtual())} dias, ${hora} horas, ${minuto} minutos e ${segundo} segundos`);
-  
+
+  const [hora, minuto, segundo] = tempoSplit(novaTarefa);
+ 
   const mensagem = document.getElementById("mensagem-remocao");
   mensagem.innerHTML = `Tarefa mais antiga:<br>${novaTarefa}<br>Tempo esperado: ${calcularDiferencaDias(novaTarefa.data, obterDataAtual())} dias, ${hora} horas, ${minuto} minutos e ${segundo} segundos`;
   mensagem.style.display = "block";
 }
 
 //--------------------------------------------------------------------------------------------
+function tempoSplit(tarefa){
+  let tempo = calcularDiferencaHoras(tarefa.hora, obterHoraAtual());
+  const [hora, minuto, segundo] = tempo.split(':').map(Number);
+
+  return [hora, minuto, segundo];
+}
+//--------------------------------------------------------------------------------------------
 function mostrarMensagemRemocao(tarefaRealizada) {
+    const [hora, minuto, segundo] = tempoSplit(tarefaRealizada);
+
     const mensagem = document.getElementById("mensagem-remocao");
-    // apresentar a mensagem de remoção com dias e horas
-    let diferencaHoras = (calcularDiferencaHoras(tarefaRealizada.hora, obterHoraAtual()));
-    const [hora, minuto, segundo] = diferencaHoras.split(':').map(Number);
     mensagem.innerHTML ="Tarefa "+ tarefaRealizada.descricao + ", realizada em: " + calcularDiferencaDias(tarefaRealizada.data, obterDataAtual()) + " dias, " + hora + " horas, " + minuto + " minutos e " + segundo + " segundos";
     mensagem.style.display = "block";
-
   }
 //-------------------------------------------------------------------------------------------- 
 // Função para atualizar a exibição da fila
@@ -167,12 +180,12 @@ let checked = 0, removido = 0;
   tab = [], index;
   let iAntes = 0;
 
-// add values to the array
+// adiciona valores no vetor
   for(let i = 0; i < items.length; i++){
     tab.push(items[i].innerHTML);
   }
   
-  // get selected element index
+  //pega o elemento selecionado
   for(let i = 0; i < items.length; i++)
   {
       items[i].onclick = function(){

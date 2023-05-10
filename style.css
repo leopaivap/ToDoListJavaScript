@@ -45,8 +45,13 @@ li:hover {
 }
 
 .alertRemocao {
-  background-color: #c3cad5;
+  background-color: #a5b0c0;
   color: #ffffff;
+  border-color:grey;
+}
+
+.body{
+  background-color: #FCFCFC;
 }
 
  
