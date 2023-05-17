@@ -87,6 +87,7 @@
       if(resposta){
         retorno = minhaLista.deleteAtIndex(removido);
         removido = 0;
+        checked = 0;
       }
       else{
         checked = 0;
